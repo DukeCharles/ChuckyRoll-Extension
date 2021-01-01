@@ -1,0 +1,35 @@
+{
+    "name": "ChuckyRoll Extension",
+    "version": "1.0",
+	"description": "Crunchyroll QoS Extension",
+	"icons": {
+		"16": "images/icon_16.png",
+		"32": "images/icon_32.png",
+		"48": "images/icon_48.png",
+		"64": "images/icon_64.png",
+		"128": "images/icon_128.png"
+	},
+	"permissions": [
+		"*://*.crunchyroll.com/*/episode-*",
+		"tabs",
+		"declarativeContent"
+	],
+	"content_scripts": [
+	{
+		"matches": ["*://*.crunchyroll.com/*/episode-*"],
+		"js": ["website_script.js"],
+		"run_at": "document_end",
+		"all_frames": true
+	}
+	],
+	"page_action": {
+		"default_icon": {
+			"16": "images/icon_16.png",
+			"32": "images/icon_32.png",
+			"48": "images/icon_48.png",
+			"64": "images/icon_64.png",
+			"128": "images/icon_128.png"
+		}
+	},
+	"manifest_version": 2
+  }
