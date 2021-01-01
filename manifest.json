@@ -1,7 +1,14 @@
 {
     "name": "ChuckyRoll Extension",
     "version": "1.0",
-    "description": "Crunchyroll QoS Extension",
+	"description": "Crunchyroll QoS Extension",
+	"icons": {
+		"16": "images/chuckyroll_16.png",
+		"32": "images/chuckyroll_32.png",
+		"48": "images/chuckyroll_48.png",
+		"64": "images/chuckyroll_64.png",
+		"128": "images/chuckyroll_128.png"
+	},
 	"background": {
 		"scripts": ["background.js"],
 		"persistent": false
@@ -31,7 +38,8 @@
 			"16": "images/chuckyroll_16.png",
 			"32": "images/chuckyroll_32.png",
 			"48": "images/chuckyroll_48.png",
-			"64": "images/chuckyroll_64.png"
+			"64": "images/chuckyroll_64.png",
+			"128": "images/chuckyroll_128.png"
 		}
 	},
 	"manifest_version": 2
