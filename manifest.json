@@ -7,7 +7,7 @@
 		"32": "images/chuckyroll_32.png",
 		"48": "images/chuckyroll_48.png",
 		"64": "images/chuckyroll_64.png",
-		"128": "images/chuckyroll_128.png"
+		"128": "images/chuckyroll_128_rw.png"
 	},
 	"background": {
 		"scripts": ["background.js"],
