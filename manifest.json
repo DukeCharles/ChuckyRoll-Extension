@@ -3,43 +3,32 @@
     "version": "1.0",
 	"description": "Crunchyroll QoS Extension",
 	"icons": {
-		"16": "images/chuckyroll_16.png",
-		"32": "images/chuckyroll_32.png",
-		"48": "images/chuckyroll_48_r.png",
-		"64": "images/chuckyroll_64.png",
-		"128": "images/chuckyroll_128_rw.png"
+		"16": "images/icon_16.png",
+		"32": "images/icon_32.png",
+		"48": "images/icon_48.png",
+		"64": "images/icon_64.png",
+		"128": "images/icon_128.png"
 	},
-	"background": {
-		"scripts": ["background.js"],
-		"persistent": false
-		},
 	"permissions": [
 		"*://*.crunchyroll.com/*/episode-*",
-		"*://static.crunchyroll.com/*",
 		"tabs",
 		"declarativeContent"
 	],
 	"content_scripts": [
 	{
-		"matches": ["*://static.crunchyroll.com/*"],
-		"js": ["video_player_script.js"],
-		"run_at": "document_end",
-		"all_frames": true
-	},
-	{
 		"matches": ["*://*.crunchyroll.com/*/episode-*"],
 		"js": ["website_script.js"],
 		"run_at": "document_end",
-		"all_frames": true}
+		"all_frames": true
+	}
 	],
 	"page_action": {
-		"default_popup": "popup.html",
 		"default_icon": {
-			"16": "images/chuckyroll_16.png",
-			"32": "images/chuckyroll_32.png",
-			"48": "images/chuckyroll_48_r.png",
-			"64": "images/chuckyroll_64.png",
-			"128": "images/chuckyroll_128_rw.png"
+			"16": "images/icon_16.png",
+			"32": "images/icon_32.png",
+			"48": "images/icon_48.png",
+			"64": "images/icon_64.png",
+			"128": "images/icon_128.png"
 		}
 	},
 	"manifest_version": 2
