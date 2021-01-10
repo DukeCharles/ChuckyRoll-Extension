@@ -7,12 +7,50 @@ console.log("ChuckyRoll duplicateRemoval extension Loading...");
     
     document.onreadystatechange = function () {
         if (document.readyState == 'complete') {
-            document.getElementsByName("more_comments")[0].addEventListener("click", function() {
-                //When the button "More comments" is clicked, the function checkForDuplicate is called again.
-                setTimeout(function() {checkForDuplicate(getCommentList(), true)}, 500)
+
+            /**
+             * MutationObserver to detect change in the comments section(Usage of the more comments button).
+             */
+            const btnObserver = new MutationObserver(observerCallBack);
+            const targetNode = document.getElementById("allCommentsList");
+            const options = {
+                childList: true,
+                subtree: true,
+                characterData: true
+            };
+
+            //When the button "More comments" is clicked, the function checkForDuplicate is called again.
+            document.getElementsByName("more_comments")[0].addEventListener("click", function(event) {
+                btnObserver.observe(targetNode, options);
             });
+            //Check for duplicate in the loaded comment
             checkForDuplicate(getCommentList(), true);
+
         }
+    }
+
+    /**
+     * Function called by the callBack of the MutationObserver
+     * @param {MutationRecord} mutationList List of all the changes made in the targetNode
+     * @param {MutationObserver} observer MutationObserver used to watch the targetNode
+     */
+    function observerCallBack(mutationList, observer) {
+        let counter = 0;
+        mutationList.forEach(mutation => {
+            //console.log(mutation);
+            //console.log(mutation.type);
+            //console.log(mutation.target);
+            if(mutation.target == document.getElementById("allCommentsList")) {
+                counter++;
+                //console.log("Counter = "+counter);
+            }
+        });
+        //console.log("Counter = "+counter);
+        if(counter >= 2) {
+            //console.log("Checking for duplicate in the comments");
+            checkForDuplicate(getCommentList(), true);
+         }
+        observer.disconnect();
     }
 
     /**
@@ -40,8 +78,9 @@ console.log("ChuckyRoll duplicateRemoval extension Loading...");
                 //Show more Replies under the Main comment box, add a event listener with click to checkForDuplicate again after adding next comment.
                 currentComment.querySelector(".more-replies").addEventListener("click", function(event) {
                     //Call the function checkForDuplicate with the specific list to check.
-                    //Get the specific list
+                    //#TODO Replaces setTimeOut with a MutationObserver
                     setTimeout(function() {
+                        //Get the specific list
                         let newRepliesList = Array.prototype.slice.call(event.target.parentElement.parentElement.parentElement.getElementsByClassName("guestbook-list cf"));
                         checkForDuplicate(newRepliesList, false)
                     }, 500);
@@ -51,8 +90,12 @@ console.log("ChuckyRoll duplicateRemoval extension Loading...");
 
             //Removing "removed" comment from taking places in the comment section
             Array.prototype.slice.call(currentComment.getElementsByClassName("removed-comment")).forEach(removedComment => {
-                console.log("[removed comment has been deleted]");
-                removedComment.parentElement.parentElement.remove();
+                console.log("[Removed comment has been deleted]");
+                const firstParent = removedComment.parentElement.parentElement.parentElement;
+                const seParent = removedComment.parentElement.parentElement;
+                //console.log(firstParent);
+                //console.log(seParent);
+                removedComment.parentElement.parentElement.parentElement.remove();
             });
 
             //Does comment exist in the Map?
@@ -96,5 +139,5 @@ console.log("ChuckyRoll duplicateRemoval extension Loading...");
      * @returns {Array} List of comments.
      */
     function getCommentList() {
-        return Array.prototype.slice.call(document.getElementById("allCommentsList").querySelectorAll('li:not([class]):not([id])'));
+        return Array.prototype.slice.call(document.getElementById("allCommentsList").children);
     }
