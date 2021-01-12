@@ -5,49 +5,37 @@
  */
 console.log("ChuckyRoll duplicateRemoval extension Loading...");
     
-    document.onreadystatechange = function () {
-        if (document.readyState == 'complete') {
-
+    window.addEventListener('load', (event) => {
             /**
              * MutationObserver to detect change in the comments section(Usage of the more comments button).
              */
-            const btnObserver = new MutationObserver(observerCallBack);
+            const btnObserver = new MutationObserver(btnObserverCallBack);
             const targetNode = document.getElementById("allCommentsList");
-            const options = {
-                childList: true,
-                subtree: true,
-                characterData: true
-            };
+            const options = {childList: true};
 
             //When the button "More comments" is clicked, the function checkForDuplicate is called again.
             document.getElementsByName("more_comments")[0].addEventListener("click", function(event) {
                 btnObserver.observe(targetNode, options);
             });
+
             //Check for duplicate in the loaded comment
             checkForDuplicate(getCommentList(), true);
 
-        }
-    }
+    });
 
     /**
-     * Function called by the callBack of the MutationObserver
+     * Function called by the callBack of the MutationObserver for the Main Comments
      * @param {MutationRecord} mutationList List of all the changes made in the targetNode
      * @param {MutationObserver} observer MutationObserver used to watch the targetNode
      */
-    function observerCallBack(mutationList, observer) {
+    function btnObserverCallBack(mutationList, observer) {
         let counter = 0;
         mutationList.forEach(mutation => {
-            //console.log(mutation);
-            //console.log(mutation.type);
-            //console.log(mutation.target);
             if(mutation.target == document.getElementById("allCommentsList")) {
                 counter++;
-                //console.log("Counter = "+counter);
             }
         });
-        //console.log("Counter = "+counter);
         if(counter >= 2) {
-            //console.log("Checking for duplicate in the comments");
             checkForDuplicate(getCommentList(), true);
          }
         observer.disconnect();
@@ -67,34 +55,31 @@ console.log("ChuckyRoll duplicateRemoval extension Loading...");
                 owner = currentComment.getElementsByClassName("guestbook-list cf")[0].getElementsByClassName("guestbook-name")[0].innerText;
                 text = currentComment.getElementsByClassName("guestbook-list cf")[0].getElementsByClassName("guestbook-body")[0].innerText;
                 repliesList = Array.prototype.slice.call(currentComment.getElementsByClassName("replylist")[0].getElementsByClassName("guestbook-list cf"));
+
+                //Add EventListener
+                //Call checkForDuplicate() when on button "show more comments" onclick for each MainComment.
+                currentComment.querySelector(".more-replies").addEventListener("click", function(event) {
+                    //Observe the change made by the call of the button and then call the checkForDuplicate function after all the changes have been made
+                    const targetNode = event.target.parentElement.parentElement.parentElement;
+                    const options = {childList: true};
+                    const replyObserver = new MutationObserver(function(mutationList, observer) {
+                        //Call the function checkForDuplicate with the specific list to check.
+                        checkForDuplicate(Array.prototype.slice.call(mutationList[0].target.getElementsByClassName("guestbook-list cf")), false);
+                        observer.disconnect();
+                    });
+                    //Tell the observer to observe any change to the targetNode
+                    replyObserver.observe(targetNode, options);                    
+                });
+
             }
             else {
                 owner = currentComment.getElementsByClassName("guestbook-name")[0].innerText;
                 text = currentComment.getElementsByClassName("guestbook-body")[0].innerText;
             }
 
-            //Call checkForDuplicate() when on button "show more comments" onclick for each MainComment.
-            if(isMainComment) {
-                //Show more Replies under the Main comment box, add a event listener with click to checkForDuplicate again after adding next comment.
-                currentComment.querySelector(".more-replies").addEventListener("click", function(event) {
-                    //Call the function checkForDuplicate with the specific list to check.
-                    //#TODO Replaces setTimeOut with a MutationObserver
-                    setTimeout(function() {
-                        //Get the specific list
-                        let newRepliesList = Array.prototype.slice.call(event.target.parentElement.parentElement.parentElement.getElementsByClassName("guestbook-list cf"));
-                        checkForDuplicate(newRepliesList, false)
-                    }, 500);
-                    console.log("SHOW MORE REPLIES CLICKED");                
-                }, false);
-            }
-
-            //Removing "removed" comment from taking places in the comment section
+            //Deleting "removed" comment from taking places in the comment section
             Array.prototype.slice.call(currentComment.getElementsByClassName("removed-comment")).forEach(removedComment => {
                 console.log("[Removed comment has been deleted]");
-                const firstParent = removedComment.parentElement.parentElement.parentElement;
-                const seParent = removedComment.parentElement.parentElement;
-                //console.log(firstParent);
-                //console.log(seParent);
                 removedComment.parentElement.parentElement.parentElement.remove();
             });
 
@@ -104,10 +89,16 @@ console.log("ChuckyRoll duplicateRemoval extension Loading...");
                 //Is there already a comment under this username?
                 comments_Map.get(owner).forEach(commentText => {
                     //Compare if the comment is indeed a duplicate.
-                    if(commentText == text) {
-                        //Remove the duplicate from the website.
+                    if(commentText.trim() == text.trim()) {
+                        //Delete the duplicate from the comment section.
                         console.log("[Duplicate comment has been deleted]");
-                        currentComment.remove();
+                        if(isMainComment) {
+                            currentComment.remove();  
+                        }
+                        else {
+                            currentComment.parentElement.remove();
+                        }
+                        
                     }
                     else {
                         //Is the comment a main comment?
