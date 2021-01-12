@@ -1,10 +1,9 @@
 /**
  * Filtering duplicate comments
  * @author Charles Morin
- * @version 1.0
+ * @version 1.0.0
  */
-console.log("ChuckyRoll duplicateRemoval extension Loading...");
-    
+
     window.addEventListener('load', (event) => {
             /**
              * MutationObserver to detect change in the comments section(Usage of the more comments button).
@@ -79,7 +78,7 @@ console.log("ChuckyRoll duplicateRemoval extension Loading...");
 
             //Deleting "removed" comment from taking places in the comment section
             Array.prototype.slice.call(currentComment.getElementsByClassName("removed-comment")).forEach(removedComment => {
-                console.log("[Removed comment has been deleted]");
+                //console.log("[Removed comment has been deleted]");
                 removedComment.parentElement.parentElement.parentElement.remove();
             });
 
@@ -91,7 +90,7 @@ console.log("ChuckyRoll duplicateRemoval extension Loading...");
                     //Compare if the comment is indeed a duplicate.
                     if(commentText.trim() == text.trim()) {
                         //Delete the duplicate from the comment section.
-                        console.log("[Duplicate comment has been deleted]");
+                        //console.log("[Duplicate comment has been deleted]");
                         if(isMainComment) {
                             currentComment.remove();  
                         }
