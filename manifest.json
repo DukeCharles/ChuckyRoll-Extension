@@ -10,8 +10,7 @@
 		"128": "images/icon_128.png"
 	},
 	"permissions": [
-		"*://*.crunchyroll.com/*/episode-*",
-		"declarativeContent"
+		"*://*.crunchyroll.com/*/episode-*"
 	],
 	"content_scripts": [
 	{
